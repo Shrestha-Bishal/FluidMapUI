@@ -49,17 +49,17 @@
     <Reference Include="Mapsui, Version=4.1.8.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Mapsui.4.1.8\lib\netstandard2.0\Mapsui.dll</HintPath>
     </Reference>
-    <Reference Include="Mapsui.Nts, Version=4.1.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Mapsui.Nts.4.1.7\lib\netstandard2.0\Mapsui.Nts.dll</HintPath>
+    <Reference Include="Mapsui.Nts, Version=4.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mapsui.Nts.4.1.1\lib\netstandard2.0\Mapsui.Nts.dll</HintPath>
     </Reference>
-    <Reference Include="Mapsui.Rendering.Skia, Version=4.1.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Mapsui.Rendering.Skia.4.1.7\lib\netstandard2.0\Mapsui.Rendering.Skia.dll</HintPath>
+    <Reference Include="Mapsui.Rendering.Skia, Version=4.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mapsui.Rendering.Skia.4.1.1\lib\netstandard2.0\Mapsui.Rendering.Skia.dll</HintPath>
     </Reference>
-    <Reference Include="Mapsui.Tiling, Version=4.1.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Mapsui.Tiling.4.1.7\lib\netstandard2.0\Mapsui.Tiling.dll</HintPath>
+    <Reference Include="Mapsui.Tiling, Version=4.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mapsui.Tiling.4.1.1\lib\netstandard2.0\Mapsui.Tiling.dll</HintPath>
     </Reference>
-    <Reference Include="Mapsui.UI.Wpf, Version=4.1.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Mapsui.Wpf.4.1.7\lib\net48\Mapsui.UI.Wpf.dll</HintPath>
+    <Reference Include="Mapsui.UI.Wpf, Version=4.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mapsui.Wpf.4.1.1\lib\net48\Mapsui.UI.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.7.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
@@ -102,8 +102,8 @@
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
     <Reference Include="System.Data" />
-    <Reference Include="System.Drawing.Common, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Drawing.Common.8.0.2\lib\net462\System.Drawing.Common.dll</HintPath>
+    <Reference Include="System.Drawing.Common, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Drawing.Common.7.0.0\lib\net462\System.Drawing.Common.dll</HintPath>
     </Reference>
     <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
@@ -115,8 +115,8 @@
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
-    <Reference Include="System.Text.Encoding.CodePages, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Text.Encoding.CodePages.8.0.0\lib\net462\System.Text.Encoding.CodePages.dll</HintPath>
+    <Reference Include="System.Text.Encoding.CodePages, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encoding.CodePages.7.0.0\lib\net462\System.Text.Encoding.CodePages.dll</HintPath>
     </Reference>
     <Reference Include="System.Text.Encodings.Web, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Text.Encodings.Web.6.0.0\lib\net461\System.Text.Encodings.Web.dll</HintPath>
