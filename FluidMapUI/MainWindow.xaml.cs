@@ -16,6 +16,7 @@ using NetTopologySuite.IO;
 using NetTopologySuite.Triangulate;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -42,6 +43,7 @@ namespace FluidMapUI
     /// </summary>
     public partial class MainWindow : Window
     {
+        private List<PolygonCoordinate> _polygonCoordinates = [];
         private List<Coordinate> _vectorCoordinatesLonLat = [];
         private List<Coordinate> _sphericalMercatorCoordinatesLonLat = [];
 
@@ -83,6 +85,14 @@ namespace FluidMapUI
                 var firstCoord = _vectorCoordinatesLonLat.First();
                 AddCoordinates(firstCoord.ToMPoint());
                 DrawPolygon();
+
+                _polygonCoordinates.Add(
+                    new(_sphericalMercatorCoordinatesLonLat.ToList(), _vectorCoordinatesLonLat.ToList()
+                ));
+
+                // clearing for the next polygon coordinates
+                _sphericalMercatorCoordinatesLonLat.Clear(); 
+                _vectorCoordinatesLonLat.Clear();
             }
 
             Console.WriteLine($"The mouse position is {mousePosition} with the longitude: {lonLat.X} and latitude {lonLat.Y}");
@@ -140,41 +150,47 @@ namespace FluidMapUI
 
         private void DrawPolygon()
         {
-            //defining style
-            var vectorStyle = new VectorStyle
+            try
             {
-                Fill = new Brush
+                //defining style
+                var vectorStyle = new VectorStyle
                 {
-                    FillStyle = FillStyle.Solid,
-                    Color = Color.FromArgb(18, 255, 0, 0)
-                },
-                Outline = new Pen
+                    Fill = new Brush
+                    {
+                        FillStyle = FillStyle.Solid,
+                        Color = Color.FromArgb(18, 255, 0, 0)
+                    },
+                    Outline = new Pen
+                    {
+                        Color = Color.Red,
+                        Width = 2.0,
+                        PenStyle = PenStyle.Solid
+                    }
+                };
+
+                var linearRing = new LinearRing([.. _sphericalMercatorCoordinatesLonLat]);
+                var polygonFeature = new GeometryFeature()
                 {
-                    Color = Color.Red,
-                    Width = 2.0,
-                    PenStyle = PenStyle.Solid
-                }
-            };
+                    Geometry = new Polygon(linearRing),
+                    Styles = { vectorStyle }
+                };
 
-            var linearRing = new LinearRing([.. _sphericalMercatorCoordinatesLonLat]);
-            var polygonFeature = new GeometryFeature()
+                polygonFeature.Styles.Add(vectorStyle);
+
+                var memoryLayer = new MemoryLayer()
+                {
+                    Features = new List<IFeature> { polygonFeature },
+                    Name = "Polygon layer",
+                    Style = null
+                };
+
+                //Add the layer 
+                var map = MapControl.Map;
+                map.Layers.Add(memoryLayer); //adding the new polygon layer
+            }catch(Exception ex)
             {
-                Geometry = new Polygon(linearRing),
-                Styles = { vectorStyle }
-            };
-
-            polygonFeature.Styles.Add(vectorStyle);
-
-            var memoryLayer = new MemoryLayer()
-            {
-                Features = new List<IFeature> { polygonFeature },
-                Name = "Polygon layer",
-                Style = null
-            };
-
-            //Add the layer 
-            var map = MapControl.Map;
-            map.Layers.Add(memoryLayer); //adding the new polygon layer
+                MessageBox.Show("An error occured while tracing a polygon. \n", ex.Message);
+            }
         }
 
         private void DrawStartMarker()
@@ -268,5 +284,21 @@ namespace FluidMapUI
 
             navigator.CenterOnAndZoomTo(sphericalMercatorCoordinate, navigator.Resolutions[5], duration: 2000);
         }
+
+
+        public class PolygonCoordinate
+        {
+            public IEnumerable<Coordinate> SphericalMercatorCoordinatesLonLat { get; }
+            public IEnumerable<Coordinate> VectorCoordinatesLonLat { get; }
+            public PolygonCoordinate(
+                IEnumerable<Coordinate> sphericalMercatorCoordinatesLonLat,
+                IEnumerable<Coordinate> vectorCoordinateLonLat)
+            {
+                SphericalMercatorCoordinatesLonLat = sphericalMercatorCoordinatesLonLat;
+                VectorCoordinatesLonLat = vectorCoordinateLonLat;
+            }
+        };
     }
 }
+
+
