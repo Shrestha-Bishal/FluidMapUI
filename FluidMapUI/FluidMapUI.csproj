@@ -9,6 +9,7 @@
     <RootNamespace>FluidMapUI</RootNamespace>
     <AssemblyName>FluidMapUI</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <LangVersion>latest</LangVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -37,8 +38,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BitMiracle.LibTiff.NET, Version=2.4.649.0, Culture=neutral, PublicKeyToken=53879b3e20e7a7d6, processorArchitecture=MSIL">
+      <HintPath>..\packages\BitMiracle.LibTiff.NET.2.4.649\lib\net40\BitMiracle.LibTiff.NET.dll</HintPath>
+    </Reference>
+    <Reference Include="BrotliSharpLib, Version=0.3.2.0, Culture=neutral, PublicKeyToken=3f4e2a1cd615fcb7, processorArchitecture=MSIL">
+      <HintPath>..\packages\BrotliSharpLib.0.3.3\lib\net451\BrotliSharpLib.dll</HintPath>
+    </Reference>
     <Reference Include="BruTile, Version=5.0.6.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\BruTile.5.0.6\lib\netstandard2.0\BruTile.dll</HintPath>
+    </Reference>
+    <Reference Include="DotSpatial.Projections, Version=4.0.656.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotSpatial.Projections.4.0.656\lib\netstandard2.0\DotSpatial.Projections.dll</HintPath>
     </Reference>
     <Reference Include="ExCSS, Version=4.2.3.0, Culture=neutral, PublicKeyToken=bdbe16be9b936b9a, processorArchitecture=MSIL">
       <HintPath>..\packages\ExCSS.4.2.3\lib\net48\ExCSS.dll</HintPath>
@@ -49,17 +59,20 @@
     <Reference Include="Mapsui, Version=4.1.8.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Mapsui.4.1.8\lib\netstandard2.0\Mapsui.dll</HintPath>
     </Reference>
-    <Reference Include="Mapsui.Nts, Version=4.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Mapsui.Nts.4.1.1\lib\netstandard2.0\Mapsui.Nts.dll</HintPath>
+    <Reference Include="Mapsui.Extensions, Version=4.1.7.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mapsui.Extensions.4.1.7\lib\netstandard2.0\Mapsui.Extensions.dll</HintPath>
     </Reference>
-    <Reference Include="Mapsui.Rendering.Skia, Version=4.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Mapsui.Rendering.Skia.4.1.1\lib\netstandard2.0\Mapsui.Rendering.Skia.dll</HintPath>
+    <Reference Include="Mapsui.Nts, Version=4.1.7.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mapsui.Nts.4.1.7\lib\netstandard2.0\Mapsui.Nts.dll</HintPath>
     </Reference>
-    <Reference Include="Mapsui.Tiling, Version=4.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Mapsui.Tiling.4.1.1\lib\netstandard2.0\Mapsui.Tiling.dll</HintPath>
+    <Reference Include="Mapsui.Rendering.Skia, Version=4.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mapsui.Rendering.Skia.4.1.2\lib\netstandard2.0\Mapsui.Rendering.Skia.dll</HintPath>
     </Reference>
-    <Reference Include="Mapsui.UI.Wpf, Version=4.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Mapsui.Wpf.4.1.1\lib\net48\Mapsui.UI.Wpf.dll</HintPath>
+    <Reference Include="Mapsui.Tiling, Version=4.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mapsui.Tiling.4.1.2\lib\netstandard2.0\Mapsui.Tiling.dll</HintPath>
+    </Reference>
+    <Reference Include="Mapsui.UI.Wpf, Version=4.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mapsui.Wpf.4.1.2\lib\net48\Mapsui.UI.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.7.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
@@ -88,6 +101,18 @@
     <Reference Include="SkiaSharp.Views.WPF, Version=2.88.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
       <HintPath>..\packages\SkiaSharp.Views.WPF.2.88.7\lib\net462\SkiaSharp.Views.WPF.dll</HintPath>
     </Reference>
+    <Reference Include="SQLite-net, Version=1.8.116.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\sqlite-net-pcl.1.8.116\lib\netstandard2.0\SQLite-net.dll</HintPath>
+    </Reference>
+    <Reference Include="SQLitePCLRaw.batteries_v2, Version=2.1.6.2060, Culture=neutral, PublicKeyToken=8226ea5df37bcae9, processorArchitecture=MSIL">
+      <HintPath>..\packages\SQLitePCLRaw.bundle_green.2.1.6\lib\net461\SQLitePCLRaw.batteries_v2.dll</HintPath>
+    </Reference>
+    <Reference Include="SQLitePCLRaw.core, Version=2.1.6.2060, Culture=neutral, PublicKeyToken=1488e028ca7ab535, processorArchitecture=MSIL">
+      <HintPath>..\packages\SQLitePCLRaw.core.2.1.6\lib\netstandard2.0\SQLitePCLRaw.core.dll</HintPath>
+    </Reference>
+    <Reference Include="SQLitePCLRaw.provider.dynamic_cdecl, Version=2.1.6.2060, Culture=neutral, PublicKeyToken=b68184102cba0b3b, processorArchitecture=MSIL">
+      <HintPath>..\packages\SQLitePCLRaw.provider.dynamic_cdecl.2.1.6\lib\netstandard2.0\SQLitePCLRaw.provider.dynamic_cdecl.dll</HintPath>
+    </Reference>
     <Reference Include="Svg.Custom, Version=1.0.0.3, Culture=neutral, PublicKeyToken=dafe96fe6c845a74, processorArchitecture=MSIL">
       <HintPath>..\packages\Svg.Custom.1.0.0.3\lib\netstandard2.0\Svg.Custom.dll</HintPath>
     </Reference>
@@ -115,8 +140,8 @@
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
-    <Reference Include="System.Text.Encoding.CodePages, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Text.Encoding.CodePages.7.0.0\lib\net462\System.Text.Encoding.CodePages.dll</HintPath>
+    <Reference Include="System.Text.Encoding.CodePages, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encoding.CodePages.8.0.0\lib\net462\System.Text.Encoding.CodePages.dll</HintPath>
     </Reference>
     <Reference Include="System.Text.Encodings.Web, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Text.Encodings.Web.6.0.0\lib\net461\System.Text.Encodings.Web.dll</HintPath>

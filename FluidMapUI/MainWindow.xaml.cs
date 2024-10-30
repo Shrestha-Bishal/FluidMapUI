@@ -4,12 +4,15 @@ using Mapsui;
 using Mapsui.Extensions;
 using Mapsui.Layers;
 using Mapsui.Nts;
+using Mapsui.Nts.Extensions;
 using Mapsui.Projections;
 using Mapsui.Styles;
 using Mapsui.Tiling;
+using Mapsui.UI;
 using Mapsui.UI.Wpf;
 using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
+using NetTopologySuite.IO;
 using NetTopologySuite.Triangulate;
 using System;
 using System.Collections.Generic;
@@ -39,6 +42,9 @@ namespace FluidMapUI
     /// </summary>
     public partial class MainWindow : Window
     {
+        private List<Coordinate> _vectorCoordinatesLonLat = [];
+        private List<Coordinate> _sphericalMercatorCoordinatesLonLat = [];
+
         public MainWindow()
         {
             InitializeComponent();
@@ -51,16 +57,90 @@ namespace FluidMapUI
             //Adding layer of open street map 
             map.Layers.Add(OpenStreetMap.CreateTileLayer());
 
+            MapControl.MouseLeftButtonUp += MapControl_MouseLeftButtonUp;
             MapControl.Map = map;
 
             NavigateToAustralia();
+        }
 
-            DrawPolygon();
-        } 
+        private void MapControl_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            var map = MapControl.Map;
+            var mousePosition =  e.GetPosition(this); //Get the current mouse position
+            var navigator = map.Navigator;
+           
+            //conver the pixel position to the world coordinates (meters)
+            var worldPosition = navigator.Viewport.ScreenToWorld(mousePosition.X, mousePosition.Y);
+
+            // Project world coordinates to latitude and longitude
+            var lonLat = SphericalMercator.ToLonLat(worldPosition);
+            AddCoordinates(lonLat);
+
+            DrawCoordinates();
+
+            if (IsPolygonComplete)
+            {
+                var firstCoord = _vectorCoordinatesLonLat.First();
+                AddCoordinates(firstCoord.ToMPoint());
+                DrawPolygon();
+            }
+
+            Console.WriteLine($"The mouse position is {mousePosition} with the longitude: {lonLat.X} and latitude {lonLat.Y}");
+        }
+
+        private bool IsPolygonComplete
+        {
+            get
+            {
+                int numCoords = _sphericalMercatorCoordinatesLonLat.Count;
+                var resolution = MapControl.Map.Navigator.Viewport.Resolution;
+                Coordinate? firstCoord = _sphericalMercatorCoordinatesLonLat.FirstOrDefault();
+                Coordinate? lastCoord = _sphericalMercatorCoordinatesLonLat.LastOrDefault();
+                double toleranceLevel = GetTolerableDistance();
+
+                static bool IsNearStartingPoint(
+                    Coordinate? firstCoord, 
+                    Coordinate? lastCoord,
+                    double tolerance)
+                {
+                    double distance = Math.Sqrt(Math.Pow(lastCoord.X - firstCoord.X, 2) + Math.Pow(lastCoord.Y - firstCoord.Y, 2));
+                    return distance <= tolerance;
+                }
+
+
+                if (numCoords < 4) return false; //there should be at least 4 coordinates to close the ring
+                if (!IsNearStartingPoint(firstCoord, lastCoord, toleranceLevel)) return false; // the last coordine should be within the tolerance level of the starting point
+                //if (!firstCoord.Equals(lastCoord)) return false; //first coordinate should be equal to last to close the ring
+                return true;
+            }
+        }
+
+        private double GetTolerableDistance()
+        {
+            var resolution = MapControl.Map.Navigator.Viewport.Resolution;
+            double pointSymbolScale = 0.4;
+            double pixelResolution = 32;
+
+            double radius = pointSymbolScale * pixelResolution * resolution;
+
+            return radius;
+        }
+
+        private void AddCoordinates(MPoint lonLat)
+        {
+            _vectorCoordinatesLonLat.Add(new Coordinate(lonLat.X, lonLat.Y));
+
+            /* Transforming the coordinates to the spherical mercator projection
+             * Transforms the lat and long from spherical representation of the earth into a flat dimension plane
+             */
+
+            var (x, y) = SphericalMercator.FromLonLat(lonLat.X, lonLat.Y);
+            _sphericalMercatorCoordinatesLonLat.Add(new Coordinate(x, y));
+        }
 
         private void DrawPolygon()
         {
-            //defining polygon
+            //defining style
             var vectorStyle = new VectorStyle
             {
                 Fill = new Brush
@@ -76,49 +156,97 @@ namespace FluidMapUI
                 }
             };
 
-            //static australian coordinates
-            var polygonCoordinates = new List<Coordinate>
-            {
-                new Coordinate(113.338953, -43.634597), // Southwest near Augusta, WA
-                new Coordinate(115.339774, -34.350983), // Near Perth, WA
-                new Coordinate(123.579131, -30.221319), // Northwest near Broome, WA
-                new Coordinate(130.856739, -12.425845), // Northern tip near Darwin, NT
-                new Coordinate(137.854808, -15.996023), // Northern Gulf near Nhulunbuy, NT
-                new Coordinate(141.001484, -16.333675), // Northeast near the Gulf of Carpentaria, QLD
-                new Coordinate(144.676123, -14.503222), // Eastern Cape York Peninsula, QLD
-                new Coordinate(153.638464, -28.176644), // East coast near Brisbane, QLD
-                new Coordinate(153.028093, -32.012175), // Southeast near Newcastle, NSW
-                new Coordinate(150.794713, -35.358225), // South coast near Batemans Bay, NSW
-                new Coordinate(146.912724, -39.233228), // South coast near Wilsons Promontory, VIC
-                new Coordinate(141.153835, -38.473678), // Southeast near Mount Gambier, SA
-                new Coordinate(129.459159, -32.186216), // Southern coast near Eucla, WA
-                new Coordinate(113.338953, -43.634597), // Closing the polygon back to the start point
-            };
-
-            //Transform the coordinates to the spherical mercator projection
-
-            for (int i = 0; i < polygonCoordinates.Count; i++)
-            {
-                var (x, y) = SphericalMercator.FromLonLat(polygonCoordinates[i].X, polygonCoordinates[i].Y);
-                polygonCoordinates[i] = new Coordinate(x, y);
-            }
-
-            //Create the linear ring for the polygons outer boundry
-            LinearRing vertices = new LinearRing(polygonCoordinates.ToArray());
-
+            var linearRing = new LinearRing([.. _sphericalMercatorCoordinatesLonLat]);
             var polygonFeature = new GeometryFeature()
             {
-                Geometry = new Polygon(vertices, null, GeometryFactory.Default),
-                //Styles = { vectorStyle },
+                Geometry = new Polygon(linearRing),
+                Styles = { vectorStyle }
             };
 
             polygonFeature.Styles.Add(vectorStyle);
 
+            var memoryLayer = new MemoryLayer()
+            {
+                Features = new List<IFeature> { polygonFeature },
+                Name = "Polygon layer",
+                Style = null
+            };
+
+            //Add the layer 
+            var map = MapControl.Map;
+            map.Layers.Add(memoryLayer); //adding the new polygon layer
+        }
+
+        private void DrawStartMarker()
+        {
+            var firstCoord = _sphericalMercatorCoordinatesLonLat.FirstOrDefault();
+            
+            if (firstCoord == default)
+                return;
+
+            var pointStyle = new SymbolStyle
+            {
+                SymbolScale = 0.4,
+                Fill = new Brush(Color.Red),
+                Outline = new Pen(Color.Red, 1)
+            };
+
+            var pointFeature = new GeometryFeature
+            {
+                Geometry = new NetTopologySuite.Geometries.Point(firstCoord.X, firstCoord.Y),
+                Styles = { pointStyle }
+            };
+
+            var memoryLayer = new MemoryLayer
+            {
+                Features = new List<IFeature> { pointFeature },
+                Name = "Starting point feature",
+                Style = null,
+            };
+
+            MapControl.Map.Layers.Add(memoryLayer);
+        }
+
+        private void DrawCoordinates()
+        {
+            var vectorStyle = new VectorStyle
+            {
+                Fill = new Brush
+                {
+                    FillStyle = FillStyle.Solid,
+                    Color = Color.FromArgb(18, 255, 0, 0)
+                },
+                Outline = new Pen
+                {
+                    Color = Color.Red,
+                    Width = 2.0,
+                    PenStyle = PenStyle.Solid
+                }
+            };
+
+            int numCoords = _sphericalMercatorCoordinatesLonLat.Count;
+
+            if (numCoords < 2)
+            {
+                DrawStartMarker();
+                return;
+            }
+
+            Coordinate vector1 = _sphericalMercatorCoordinatesLonLat[numCoords - 2];
+            Coordinate vector2 = _sphericalMercatorCoordinatesLonLat[numCoords - 1];
+
+            var lineFeature = new GeometryFeature()
+            {
+                Geometry = new LineString([vector1, vector2]),
+            };
+
+            lineFeature.Styles.Add(vectorStyle);
+
             //Add the feature to a memory layer
             var memoryLayer = new MemoryLayer
             {
-                Features = new List<IFeature> { polygonFeature },
-                Name = "Polygon Layer",
+                Features = new List<IFeature> { lineFeature },
+                Name = "Layer",
                 Style = null
             };
 
