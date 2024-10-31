@@ -12,6 +12,7 @@ using Mapsui.UI;
 using Mapsui.UI.Wpf;
 using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
+using NetTopologySuite.GeometriesGraph;
 using NetTopologySuite.IO;
 using NetTopologySuite.Triangulate;
 using System;
@@ -46,6 +47,7 @@ namespace FluidMapUI
         private List<PolygonCoordinate> _polygonCoordinates = [];
         private List<Coordinate> _vectorCoordinatesLonLat = [];
         private List<Coordinate> _sphericalMercatorCoordinatesLonLat = [];
+        private System.Windows.Point? _mouseLeftDownPosition;
 
         public MainWindow()
         {
@@ -59,16 +61,46 @@ namespace FluidMapUI
             //Adding layer of open street map 
             map.Layers.Add(OpenStreetMap.CreateTileLayer());
 
+            MapControl.MouseLeftButtonDown += MapControl_MouseLeftButtonDown;
             MapControl.MouseLeftButtonUp += MapControl_MouseLeftButtonUp;
             MapControl.Map = map;
 
             NavigateToAustralia();
         }
 
+        private void MapControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            //getting the snapshot of the current mouse position
+            _mouseLeftDownPosition = e.GetPosition(this);
+        }
+
+        private static bool IsMouseDrag(System.Windows.Point? startingPosition, System.Windows.Point? finishingPosition)
+        {
+            if(startingPosition != null && finishingPosition != null)
+            {
+                const double dragThreshold = 5.0;
+
+                double x = finishingPosition.Value.X - startingPosition.Value.X;
+                double y = finishingPosition.Value.Y - startingPosition.Value.Y;
+
+                double distance = Math.Sqrt(x * x + y * y);
+
+                return distance > dragThreshold;
+            }
+
+            return false;
+        }
+
         private void MapControl_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             var map = MapControl.Map;
             var mousePosition =  e.GetPosition(this); //Get the current mouse position
+
+            var isMouseDrag = IsMouseDrag(_mouseLeftDownPosition, mousePosition);
+
+            if (isMouseDrag)
+                return;
+
             var navigator = map.Navigator;
            
             //conver the pixel position to the world coordinates (meters)
